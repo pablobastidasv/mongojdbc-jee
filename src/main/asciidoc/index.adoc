@@ -1,0 +1,11 @@
+= Mongo JDBC - JakartaEE
+version: {project-version}
+:toc:
+
+include::_snippets/description.adoc[]
+
+include::_snippets/defaults.adoc[]
+
+include::_snippets/env_configuration.adoc[]
+
+include::_snippets/examples.adoc[]

@@ -1,0 +1,13 @@
+=== Working with MongoDatabase
+
+
+
+[source,java]
+----
+import com.mongodb.client.MongoDatabase;
+
+...
+    @Inject
+    private MongoDatabase database;
+...
+----

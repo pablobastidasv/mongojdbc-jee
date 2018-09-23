@@ -1,0 +1,14 @@
+:jsonbserializer_url: https://javaee.github.io/javaee-spec/javadocs/javax/json/bind/serializer/JsonbSerializer.html
+:pojo_decoder_url: http://mongodb.github.io/mongo-java-driver/3.6/driver/getting-started/quick-start-pojo/
+
+Mongo JDBC-JakartaEE library to increase the productivity allowing the developer
+focus on the logic he needs to work forgetting about Mongodb-JDBC concerns.
+
+Mongo JDBC-JakartaEE library provide below capabilities.
+
+ - It is done on CDI this makes it compatible with Jakarta EE (JavaEE 8)
+    applications.
+ - Provide {jsonbserializer_url}[Serializer] implementation for ObjectId class.
+ - Developer work based on the use of `MongoDatabase` injectable instance.
+ - Ready to work with {pojo_decoder_url}[Mongodb JDBC Pojo Decoder]
+ - Configurable via environment variables

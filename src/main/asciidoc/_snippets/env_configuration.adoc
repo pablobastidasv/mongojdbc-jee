@@ -1,0 +1,28 @@
+== Available environment variables
+
+[%header,cols=3*]
+|====
+| Environment variable Name
+| Description
+| Default value
+
+| MONGO_USERNAME
+| User name to connect to MongoDB server
+| `<Empty>`
+
+| MONGO_PASSWORD
+| Password of the defined username
+| `<Empty>`
+
+| MONGO_SERVER
+| Hostname of the MongoDB server
+| localhost
+
+| MONGO_PORT
+| Port of the MongoDB server
+| 27017
+
+| DATABASE_NAME
+| Database name
+| avalane
+|====
