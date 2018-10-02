@@ -1,3 +1,48 @@
 == Default behaviour
 
-The library
+By default the `{library_name}` library will run connecting to `localhost`
+though `27017` port without certificate and creating a database called
+`avalane`.
+
+This behaviour can be changed setting some environment variables in the host
+overriding the default values.
+
+=== Available environment variables
+
+[%header,cols=3*]
+|====
+| Environment variable Name
+| Description
+| Default value
+
+| MONGO_USERNAME
+| User name to connect to MongoDB server
+| `<Empty>`
+
+| MONGO_PASSWORD
+| Password of the defined username
+| `<Empty>`
+
+| MONGO_SERVER
+| Hostname of the MongoDB server
+| localhost
+
+| MONGO_PORT
+| Port of the MongoDB server
+| 27017
+
+| DATABASE_NAME
+| Database name
+| avalane
+|====
+
+=== Mongo JDBC
+
+{library_name} uses Mongo JDBC driver version {mongojdbc-version}.
+
+This library is a transitive dependency what means it is not needed to
+add the JDBC mongo driver when this library is used, only adding
+the {library_name} as dependency it's enough to start to work with mongo
+in the application.
+
+

@@ -1,11 +1,14 @@
-= Mongo JDBC - JakartaEE
+:library_name: Mongo JDBC - JakartaEE
+= {library_name}
 version: {project-version}
 :toc:
 
 include::_snippets/description.adoc[]
 
+include::_snippets/getting_started.adoc[]
+
 include::_snippets/defaults.adoc[]
 
-include::_snippets/env_configuration.adoc[]
+include::_snippets/mongo_entity.adoc[]
 
 include::_snippets/examples.adoc[]

@@ -1,0 +1,14 @@
+:json_and_bson_url: https://www.mongodb.com/json-and-bson
+:pojo_codec: http://mongodb.github.io/mongo-java-driver/3.6/driver/getting-started/quick-start-pojo/
+
+== The MongodbEntity interface
+
+The Mongo entity interface gives to user the ability to create a
+{json_and_bson_url}[BSON] object based on the POJO which implements the interface.
+
+=== Why does this interface exist
+
+The `MongodbEntity` was created to provide method `toDocument()` which will convert
+the entity to a BSON object that can be created to save into database to get the
+id, because over {pojo_codec}[POJO] codec is not possible to obtain the new ID
+after save.

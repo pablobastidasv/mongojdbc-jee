@@ -1,3 +1,14 @@
 == Examples
 
+Below some examples to clarify the uses this library has.
+
 include::examples/mongodatabase.adoc[]
+
+include::examples/inject_collection_type_document.adoc[]
+
+include::examples/inject_collection_entity_type.adoc[]
+
+include::examples/using_mongodb_entity.adoc[]
+
+include::examples/get_id_after_save.adoc[]
+

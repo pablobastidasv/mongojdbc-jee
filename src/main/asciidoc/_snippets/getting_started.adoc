@@ -1,0 +1,27 @@
+== Getting started
+
+Add this dependency on your project.
+
+=== Maven
+
+[source,xml,subs="attributes,specialchars"]
+----
+<dependency>
+    <groupId>io.github.pablobastidasv</groupId>
+    <artifactId>mongojdbc-utils</artifactId>
+    <version>{project-version}</version>
+</dependency>
+----
+
+=== Gradle
+
+[source,gradle,subs="attributes"]
+----
+compile 'io.github.pablobastidasv:mongojdbc-utils:{project-version}'
+----
+
+WARNING: This dependency already include Mongodb JDBC driver version
+{mongojdbc-version}, you don't need to included it.
+
+NOTE: If you already have provided a Mongodb JDBC driver, exclude this
+library to avoid dependencies clash.

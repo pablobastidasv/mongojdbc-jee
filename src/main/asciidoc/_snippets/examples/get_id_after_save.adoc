@@ -1,0 +1,48 @@
+:jira_issue: https://jira.mongodb.org/browse/JAVA-2674
+
+=== How to get id after save a document
+
+There is a know behaviour in Mongodb JDBC driver, this not allow to
+get the id of an POJO object just after creation ({jira_issue}[JAVA-2374]).
+
+Because of this, bellow an example of how to obtain this `id` using
+`MongodbEntity` and `MongoCollection<Document>` with {library_name}.
+
+[source,java]
+.MyEntity.java
+----
+import co.pablob.mongo.entity.MongodbEntity; <1>
+
+public MyEntity implements MongodbEntity { <2>
+    ...
+}
+----
+
+[source,java]
+.Dao.java
+----
+    <3>
+    @Inject
+    @Definition(MyEntity.COLLECTION_NAME)
+    MongoCollection<Document> vanillaCollection;
+
+    ...
+
+    Document document = myEntity.toDocument(); <4>
+    vanillaCollection.insertOne(document); <5>
+    ObjectId id = document.getObjectId("_id"); <6>
+    System.out.println(id);
+----
+
+<1> Inside the entity import the Interface `MongodbEntity`
+
+<2> In the entity, implement the interface `MongodbEntity`
+
+<3> In the DAO, inject a `MongoCollection` with type `org.bson.Document`.
+
+<4> Use the method `toDocument()` provided form the entity and create a
+`Document` object.
+
+<5> Use the method `insertOne` from the `MongoCollection` instance.
+
+<6> From the document, obtain the value of the `id` (ObjectId)

@@ -98,7 +98,6 @@ public class DocumentCollectionManagerProducer {
 
     @Produces
     @Definition
-    @Dependent
     @SuppressWarnings("unchecked")
     public <T> MongoCollection<T> provideCollection(InjectionPoint ip) {
         Definition annotation = ip.getAnnotated().getAnnotation(Definition.class);

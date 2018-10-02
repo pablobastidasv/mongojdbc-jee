@@ -527,11 +527,30 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#default-behaviour">Default behaviour</a></li>
+<li><a href="#getting-started">Getting started</a>
+<ul class="sectlevel2">
+<li><a href="#maven">Maven</a></li>
+<li><a href="#gradle">Gradle</a></li>
+</ul>
+</li>
+<li><a href="#default-behaviour">Default behaviour</a>
+<ul class="sectlevel2">
 <li><a href="#available-environment-variables">Available environment variables</a></li>
+<li><a href="#mongo-jdbc">Mongo JDBC</a></li>
+</ul>
+</li>
+<li><a href="#the-mongodbentity-interface">The MongodbEntity interface</a>
+<ul class="sectlevel2">
+<li><a href="#why-does-this-interface-exist">Why does this interface exist</a></li>
+</ul>
+</li>
 <li><a href="#examples">Examples</a>
 <ul class="sectlevel2">
 <li><a href="#working-with-mongodatabase">Working with MongoDatabase</a></li>
+<li><a href="#injecting-mongocollection-document">Injecting MongoCollection&lt;Document&gt;</a></li>
+<li><a href="#inject-mongocollection-t">Inject MongoCollection&lt;T&gt;</a></li>
+<li><a href="#using-mongodbentity-interface">Using MongodbEntity interface</a></li>
+<li><a href="#how-to-get-id-after-save-a-document">How to get id after save a document</a></li>
 </ul>
 </li>
 </ul>
@@ -541,7 +560,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Mongo JDBC-JakartaEE library to increase the productivity allowing the developer
+<p>Mongo JDBC - JakartaEE library to increase the productivity allowing the developer
 focus on the logic he needs to work forgetting about Mongodb-JDBC concerns.</p>
 </div>
 <div class="paragraph">
@@ -551,7 +570,7 @@ focus on the logic he needs to work forgetting about Mongodb-JDBC concerns.</p>
 <ul>
 <li>
 <p>It is done on CDI this makes it compatible with Jakarta EE (JavaEE 8)
-applications.</p>
+applications and every CDI application.</p>
 </li>
 <li>
 <p>Provide <a href="https://javaee.github.io/javaee-spec/javadocs/javax/json/bind/serializer/JsonbSerializer.html">Serializer</a> implementation for ObjectId class.</p>
@@ -560,12 +579,69 @@ applications.</p>
 <p>Developer work based on the use of <code>MongoDatabase</code> injectable instance.</p>
 </li>
 <li>
-<p>Ready to work with <a href="http://mongodb.github.io/mongo-java-driver/3.6/driver/getting-started/quick-start-pojo/">Mongodb JDBC Pojo Decoder</a></p>
+<p>Ready to work with <a href="http://mongodb.github.io/mongo-java-driver/3.6/driver/getting-started/quick-start-pojo/">Mongodb JDBC Pojo Decoder</a>.</p>
 </li>
 <li>
-<p>Configurable via environment variables</p>
+<p>Configurable via environment variables.</p>
+</li>
+<li>
+<p>Mongo entity interface provided to create BSON documents based on POJO.</p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started"><a class="anchor" href="#getting-started"></a>Getting started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Add this dependency on your project.</p>
+</div>
+<div class="sect2">
+<h3 id="maven"><a class="anchor" href="#maven"></a>Maven</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>io.github.pablobastidasv<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>mongojdbc-utils<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="gradle"><a class="anchor" href="#gradle"></a>Gradle</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="gradle">compile 'io.github.pablobastidasv:mongojdbc-utils:1.0.0-SNAPSHOT'</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This dependency already include Mongodb JDBC driver version
+3.8.1, you don&#8217;t need to included it.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you already have provided a Mongodb JDBC driver, exclude this
+library to avoid dependencies clash.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -573,13 +649,16 @@ applications.</p>
 <h2 id="default-behaviour"><a class="anchor" href="#default-behaviour"></a>Default behaviour</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The library</p>
+<p>By default the <code>Mongo JDBC - JakartaEE</code> library will run connecting to <code>localhost</code>
+though <code>27017</code> port without certificate and creating a database called
+<code>avalane</code>.</p>
 </div>
+<div class="paragraph">
+<p>This behaviour can be changed setting some environment variables in the host
+overriding the default values.</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="available-environment-variables"><a class="anchor" href="#available-environment-variables"></a>Available environment variables</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="available-environment-variables"><a class="anchor" href="#available-environment-variables"></a>Available environment variables</h3>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -622,10 +701,44 @@ applications.</p>
 </tbody>
 </table>
 </div>
+<div class="sect2">
+<h3 id="mongo-jdbc"><a class="anchor" href="#mongo-jdbc"></a>Mongo JDBC</h3>
+<div class="paragraph">
+<p>Mongo JDBC - JakartaEE uses Mongo JDBC driver version 3.8.1.</p>
+</div>
+<div class="paragraph">
+<p>This library is a transitive dependency what means it is not needed to
+add the JDBC mongo driver when this library is used, only adding
+the Mongo JDBC - JakartaEE as dependency it&#8217;s enough to start to work with mongo
+in the application.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the-mongodbentity-interface"><a class="anchor" href="#the-mongodbentity-interface"></a>The MongodbEntity interface</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Mongo entity interface gives to user the ability to create a
+<a href="https://www.mongodb.com/json-and-bson">BSON</a> object based on the POJO which implements the interface.</p>
+</div>
+<div class="sect2">
+<h3 id="why-does-this-interface-exist"><a class="anchor" href="#why-does-this-interface-exist"></a>Why does this interface exist</h3>
+<div class="paragraph">
+<p>The <code>MongodbEntity</code> was created to provide method <code>toDocument()</code> which will convert
+the entity to a BSON object that can be created to save into database to get the
+id, because over <a href="http://mongodb.github.io/mongo-java-driver/3.6/driver/getting-started/quick-start-pojo/">POJO</a> codec is not possible to obtain the new ID
+after save.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Below some examples to clarify the uses this library has.</p>
+</div>
 <div class="sect2">
 <h3 id="working-with-mongodatabase"><a class="anchor" href="#working-with-mongodatabase"></a>Working with MongoDatabase</h3>
 <div class="listingblock">
@@ -639,12 +752,99 @@ applications.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="injecting-mongocollection-document"><a class="anchor" href="#injecting-mongocollection-document"></a>Injecting MongoCollection&lt;Document&gt;</h3>
+
+</div>
+<div class="sect2">
+<h3 id="inject-mongocollection-t"><a class="anchor" href="#inject-mongocollection-t"></a>Inject MongoCollection&lt;T&gt;</h3>
+
+</div>
+<div class="sect2">
+<h3 id="using-mongodbentity-interface"><a class="anchor" href="#using-mongodbentity-interface"></a>Using MongodbEntity interface</h3>
+<div class="listingblock">
+<div class="title">MyEntity.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">co.pablob.mongo.entity.MongodbEntity</span>; <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="directive">public</span> MyEntity <span class="directive">implements</span> MongodbEntity { <i class="conum" data-value="2"></i><b>(2)</b>
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how-to-get-id-after-save-a-document"><a class="anchor" href="#how-to-get-id-after-save-a-document"></a>How to get id after save a document</h3>
+<div class="paragraph">
+<p>There is a know behaviour in Mongodb JDBC driver, this not allow to
+get the id of an POJO object just after creation (<a href="https://jira.mongodb.org/browse/JAVA-2674">JAVA-2374</a>).</p>
+</div>
+<div class="paragraph">
+<p>Because of this, bellow an example of how to obtain this <code>id</code> using
+<code>MongodbEntity</code> and <code>MongoCollection&lt;Document&gt;</code> with Mongo JDBC - JakartaEE.</p>
+</div>
+<div class="listingblock">
+<div class="title">MyEntity.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">co.pablob.mongo.entity.MongodbEntity</span>; <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="directive">public</span> MyEntity <span class="directive">implements</span> MongodbEntity { <i class="conum" data-value="2"></i><b>(2)</b>
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Dao.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="annotation">@Inject</span>
+    <span class="annotation">@Definition</span>(MyEntity.COLLECTION_NAME)
+    MongoCollection&lt;<span class="predefined-type">Document</span>&gt; vanillaCollection;
+
+    ...
+
+    Document document = myEntity.toDocument(); <i class="conum" data-value="4"></i><b>(4)</b>
+    vanillaCollection.insertOne(document); <i class="conum" data-value="5"></i><b>(5)</b>
+    ObjectId id = document.getObjectId(<span class="string"><span class="delimiter">&quot;</span><span class="content">_id</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="6"></i><b>(6)</b>
+    <span class="predefined-type">System</span>.out.println(id);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Inside the entity import the Interface <code>MongodbEntity</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>In the entity, implement the interface <code>MongodbEntity</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>In the DAO, inject a <code>MongoCollection</code> with type <code>org.bson.Document</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Use the method <code>toDocument()</code> provided form the entity and create a
+<code>Document</code> object.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Use the method <code>insertOne</code> from the <code>MongoCollection</code> instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>From the document, obtain the value of the <code>id</code> (ObjectId)</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-09-22 09:56:41 CEST
+Last updated 2018-09-30 10:20:26 CEST
 </div>
 </div>
 </body>
