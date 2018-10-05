@@ -11,7 +11,6 @@ import com.mongodb.connection.ClusterSettings;
 import org.bson.codecs.configuration.CodecRegistry;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
@@ -30,7 +29,7 @@ public class DocumentCollectionManagerProducer {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    private CodecRegistry codecRegistry;
+    private final CodecRegistry codecRegistry;
 
     private char[] pwd;
     private String usr;

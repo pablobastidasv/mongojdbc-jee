@@ -1,1 +1,5 @@
-== Inject MongoCollection<T>
+=== Working with MongoCollection<T>
+
+{library_name} provides a way to inject a MongoCollection specifying the
+POJO type of the `MongoCollection`.
+

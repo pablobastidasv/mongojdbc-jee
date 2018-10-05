@@ -1,2 +1,13 @@
-== Using MongodbEntity interface
+=== Using MongodbEntity interface
 
+
+
+[source,java]
+.MyEntity.java
+----
+import co.pablob.mongo.entity.MongodbEntity; <1>
+
+public MyEntity implements MongodbEntity { <2>
+    ...
+}
+----

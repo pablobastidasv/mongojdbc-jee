@@ -1,1 +1,1 @@
-== Injecting MongoCollection<Document>
+=== Injecting MongoCollection<Document>
