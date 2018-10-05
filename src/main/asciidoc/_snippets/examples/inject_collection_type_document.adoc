@@ -1,1 +1,15 @@
 === Injecting MongoCollection<Document>
+
+To inject a MongoCollection of type `org.bson.Document`, follow the below sniped.
+
+[source,java]
+----
+    @Inject
+    @Definition(collection = MyEntity.COLLECTION_NAME) <1>
+    MongoCollection<Document> vanillaCollection; <2>
+----
+
+<1> Use the annotaion `@Definition` specifying the collection attribute with the collection name.
+<2> Declare the `MongoCollection` object of type `org.bson.Document`.
+
+NOTE: This collection is useful when you want to save a document and get its id after save.

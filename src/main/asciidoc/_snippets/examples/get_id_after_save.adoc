@@ -38,10 +38,9 @@ public MyEntity implements MongodbEntity { <2>
 
 <2> In the entity, implement the interface `MongodbEntity`
 
-<3> In the DAO, inject a `MongoCollection` with type `org.bson.Document`.
+<3> In the a vanilla MongoCollection (link:#_injecting_mongocollection_document[Inject MongoCollection]).
 
-<4> Use the method `toDocument()` provided form the entity and create a
-`Document` object.
+<4> Use the method `toDocument()` (link:#_using_mongodbentity_interface[Use Mongodb Interface]).
 
 <5> Use the method `insertOne` from the `MongoCollection` instance.
 

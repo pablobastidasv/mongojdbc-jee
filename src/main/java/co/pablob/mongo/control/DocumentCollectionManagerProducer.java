@@ -102,7 +102,7 @@ public class DocumentCollectionManagerProducer {
         Definition annotation = ip.getAnnotated().getAnnotation(Definition.class);
         Objects.requireNonNull(annotation, "Value with collection name is required.");
 
-        String collectionName = annotation.value();
+        String collectionName = annotation.collection();
         Objects.requireNonNull(collectionName);
 
         if (collectionName.trim().isEmpty()) {

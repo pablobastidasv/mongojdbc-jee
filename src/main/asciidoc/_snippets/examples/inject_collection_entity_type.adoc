@@ -3,3 +3,16 @@
 {library_name} provides a way to inject a MongoCollection specifying the
 POJO type of the `MongoCollection`.
 
+[source,java]
+----
+    @Inject
+    @Definition(collection = MyEntity.COLLECTION_NAME, clazz = MyEntity.class) <1>
+    MongoCollection<MyEntity> collection; <2>
+----
+
+<1> Use the annotation `Definition` to specify the definition of the `Collection`
+        * `collection` (Required): Name of the collection in the database.
+        * `clazz`: Class type of the POJO who represents the document.
+                   By default the clazz value is `org.bson.Document`
+                   (see link:#_injecting_mongocollection_document[this example] to more information).
+<2> The `MongoCollection` of the specified type on `clazz` attribute in step 1.

@@ -1,0 +1,14 @@
+== ObjectIdSerializer Usage
+
+[source,java]
+----
+import javax.json.bind.annotation.JsonbTypeSerializer;
+
+...
+
+    @JsonbTypeSerializer(ObjectIdSerializer.class)
+    private ObjectId id;
+
+...
+----
+

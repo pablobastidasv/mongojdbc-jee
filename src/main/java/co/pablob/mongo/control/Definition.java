@@ -11,9 +11,18 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Definition {
-    @Nonbinding
-    String value() default "";
 
+    /**
+     * Define the name of the collection.
+     */
+    @Nonbinding
+    String collection() default "";
+
+    /**
+     * Define the Class that the collection going to handle.
+     *
+     * Default value is {@link Document}
+     */
     @Nonbinding
     Class clazz() default Document.class;
 }

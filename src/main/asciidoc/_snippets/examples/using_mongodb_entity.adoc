@@ -1,6 +1,9 @@
 === Using MongodbEntity interface
 
+The {library_name} defines a interface to provide the method `toDocument()` to your classes.
 
+This method will be useful to convert the actual POJO to a `org.bson.Document` object that can be handle by the
+Mongo JDBC driver.
 
 [source,java]
 .MyEntity.java
@@ -11,3 +14,6 @@ public MyEntity implements MongodbEntity { <2>
     ...
 }
 ----
+
+<1> Import the respective interface.
+<2> Implements this interface in your entity.

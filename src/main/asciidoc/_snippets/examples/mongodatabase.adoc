@@ -1,6 +1,7 @@
 === Working with MongoDatabase
 
-
+In case you need to work directly with the `MongoDatabase` instance, the injection of this instance is available by
+`@Inject` cdi annotation.
 
 [source,java]
 ----
@@ -11,3 +12,5 @@ import com.mongodb.client.MongoDatabase;
     private MongoDatabase database;
 ...
 ----
+
+Above example will inject the *unique* instance of database which is share by the whole application.
