@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<meta name="author" content="version: 1.0.0-SNAPSHOT">
+<meta name="author" content="version: 1.0.0">
 <title>Mongo JDBC - JakartaEE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -522,7 +522,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Mongo JDBC - JakartaEE</h1>
 <div class="details">
-<span id="author" class="author">version: 1.0.0-SNAPSHOT</span><br>
+<span id="author" class="author">version: 1.0.0</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -604,7 +604,7 @@ applications and every CDI application.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>io.github.pablobastidasv<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>mongojdbc-utils<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>1.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.0.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -613,7 +613,7 @@ applications and every CDI application.</p>
 <h3 id="gradle"><a class="anchor" href="#gradle"></a>Gradle</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="gradle">compile 'io.github.pablobastidasv:mongojdbc-utils:1.0.0-SNAPSHOT'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="gradle">compile 'io.github.pablobastidasv:mongojdbc-utils:1.0.0'</code></pre>
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -741,6 +741,10 @@ after save.</p>
 </div>
 <div class="sect2">
 <h3 id="working-with-mongodatabase"><a class="anchor" href="#working-with-mongodatabase"></a>Working with MongoDatabase</h3>
+<div class="paragraph">
+<p>In case you need to work directly with the <code>MongoDatabase</code> instance, the injection of this instance is available by
+<code>@Inject</code> cdi annotation.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">com.mongodb.client.MongoDatabase</span>;
@@ -751,10 +755,46 @@ after save.</p>
 ...</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Above example will inject the <strong>unique</strong> instance of database which is share by the whole application.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="injecting-mongocollection-document"><a class="anchor" href="#injecting-mongocollection-document"></a>Injecting MongoCollection&lt;Document&gt;</h3>
-
+<div class="paragraph">
+<p>To inject a MongoCollection of type <code>org.bson.Document</code>, follow the below sniped.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Inject</span>
+    <span class="annotation">@Definition</span>(collection = MyEntity.COLLECTION_NAME) <i class="conum" data-value="1"></i><b>(1)</b>
+    MongoCollection&lt;<span class="predefined-type">Document</span>&gt; vanillaCollection; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the annotaion <code>@Definition</code> specifying the collection attribute with the collection name.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Declare the <code>MongoCollection</code> object of type <code>org.bson.Document</code>.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This collection is useful when you want to save a document and get its id after save.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="working-with-mongocollection-t"><a class="anchor" href="#working-with-mongocollection-t"></a>Working with MongoCollection&lt;T&gt;</h3>
@@ -762,9 +802,47 @@ after save.</p>
 <p>Mongo JDBC - JakartaEE provides a way to inject a MongoCollection specifying the
 POJO type of the <code>MongoCollection</code>.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Inject</span>
+    <span class="annotation">@Definition</span>(collection = MyEntity.COLLECTION_NAME, clazz = MyEntity.class) <i class="conum" data-value="1"></i><b>(1)</b>
+    MongoCollection&lt;MyEntity&gt; collection; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the annotation <code>Definition</code> to specify the definition of the <code>Collection</code>
+<div class="ulist">
+<ul>
+<li>
+<p><code>collection</code> (Required): Name of the collection in the database.</p>
+</li>
+<li>
+<p><code>clazz</code>: Class type of the POJO who represents the document.
+By default the clazz value is <code>org.bson.Document</code>
+(see <a href="#_injecting_mongocollection_document">this example</a> to more information).</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>MongoCollection</code> of the specified type on <code>clazz</code> attribute in step 1.</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="using-mongodbentity-interface"><a class="anchor" href="#using-mongodbentity-interface"></a>Using MongodbEntity interface</h3>
+<div class="paragraph">
+<p>The Mongo JDBC - JakartaEE defines a interface to provide the method <code>toDocument()</code> to your classes.</p>
+</div>
+<div class="paragraph">
+<p>This method will be useful to convert the actual POJO to a <code>org.bson.Document</code> object that can be handle by the
+Mongo JDBC driver.</p>
+</div>
 <div class="listingblock">
 <div class="title">MyEntity.java</div>
 <div class="content">
@@ -774,6 +852,18 @@ POJO type of the <code>MongoCollection</code>.</p>
     ...
 }</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Import the respective interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Implements this interface in your entity.</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -824,12 +914,11 @@ get the id of an POJO object just after creation (<a href="https://jira.mongodb.
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>In the DAO, inject a <code>MongoCollection</code> with type <code>org.bson.Document</code>.</td>
+<td>In the a vanilla MongoCollection (<a href="#_injecting_mongocollection_document">Inject MongoCollection</a>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Use the method <code>toDocument()</code> provided form the entity and create a
-<code>Document</code> object.</td>
+<td>Use the method <code>toDocument()</code> (<a href="#_using_mongodbentity_interface">Use Mongodb Interface</a>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -847,7 +936,7 @@ get the id of an POJO object just after creation (<a href="https://jira.mongodb.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-10-05 15:50:29 CEST
+Last updated 2018-09-30 10:20:26 CEST
 </div>
 </div>
 </body>
