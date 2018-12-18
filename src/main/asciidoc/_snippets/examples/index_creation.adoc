@@ -1,0 +1,19 @@
+=== How to create indexes
+
+When there is the necessity to create index into your database proceed based
+on below example.
+
+[source,java]
+====
+public class Indexer implements MongodbCustomizer {
+    @Override
+    public void customize(MongoDatabase mongoDatabase) {
+        MongoCollection<Document> collection = mongoDatabase.getCollection("collection");
+
+        IndexOptions options = new IndexOptions();
+        options.unique(true);
+
+        collection.createIndex(Indexes.ascending("unq_field"), options);
+    }
+}
+====

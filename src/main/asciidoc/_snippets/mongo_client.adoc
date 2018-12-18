@@ -1,0 +1,10 @@
+== MongoClient
+
+The `MongoClient` instance is injectable via CDI as explained below.
+
+[source,java]
+====
+@Inject
+private MongoClient client;
+====
+

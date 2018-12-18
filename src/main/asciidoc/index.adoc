@@ -11,4 +11,6 @@ include::_snippets/defaults.adoc[]
 
 include::_snippets/mongo_entity.adoc[]
 
+include::_snippets/customizer.adoc[]
+
 include::_snippets/examples.adoc[]

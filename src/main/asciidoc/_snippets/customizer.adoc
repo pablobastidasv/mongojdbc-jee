@@ -1,0 +1,12 @@
+== Customizer
+
+In the case of the necessity to create an index the library provides an
+interface which can be implemented and this will run as soon as the
+`MongoDatabase` reference is created.
+
+The interface `co.pablob.mongo.boundary.MongodbCustomizer` requires the
+implementation of the method `customize` which receives a reference of the
+database (`MongoDatabase`) to make the needed customizations like index
+creation.
+
+
