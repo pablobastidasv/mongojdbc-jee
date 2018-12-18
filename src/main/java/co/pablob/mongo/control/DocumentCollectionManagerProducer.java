@@ -1,5 +1,6 @@
 package co.pablob.mongo.control;
 
+import co.pablob.mongo.boundary.MongodbCustomizer;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -14,6 +15,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
@@ -38,6 +40,9 @@ public class DocumentCollectionManagerProducer {
     private String databaseName;
 
     @Inject
+    private Instance<MongodbCustomizer> customizations;
+
+    @Inject
     public DocumentCollectionManagerProducer(CodecRegistry codecRegistry) {
         this.codecRegistry = codecRegistry;
     }
@@ -53,6 +58,9 @@ public class DocumentCollectionManagerProducer {
 
         mongoClient = MongoClients.create(builder.build());
         database = mongoClient.getDatabase(databaseName);
+
+        customizations.stream()
+                .forEach(c -> c.customize(database));
     }
 
     public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object init) {

@@ -12,3 +12,5 @@ include::examples/using_mongodb_entity.adoc[]
 
 include::examples/get_id_after_save.adoc[]
 
+include::examples/index_creation.adoc[]
+

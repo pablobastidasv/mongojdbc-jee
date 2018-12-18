@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<meta name="author" content="version: 1.0.0">
+<meta name="author" content="version: 1.1.0">
 <title>Mongo JDBC - JakartaEE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -522,7 +522,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Mongo JDBC - JakartaEE</h1>
 <div class="details">
-<span id="author" class="author">version: 1.0.0</span><br>
+<span id="author" class="author">version: 1.1.0</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -544,6 +544,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#why-does-this-interface-exist">Why does this interface exist</a></li>
 </ul>
 </li>
+<li><a href="#customizer">Customizer</a></li>
 <li><a href="#examples">Examples</a>
 <ul class="sectlevel2">
 <li><a href="#working-with-mongodatabase">Working with MongoDatabase</a></li>
@@ -551,6 +552,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#working-with-mongocollection-t">Working with MongoCollection&lt;T&gt;</a></li>
 <li><a href="#using-mongodbentity-interface">Using MongodbEntity interface</a></li>
 <li><a href="#how-to-get-id-after-save-a-document">How to get id after save a document</a></li>
+<li><a href="#how-to-create-indexes">How to create indexes</a></li>
 </ul>
 </li>
 </ul>
@@ -604,7 +606,7 @@ applications and every CDI application.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>io.github.pablobastidasv<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>mongojdbc-utils<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>1.0.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.1.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -613,7 +615,7 @@ applications and every CDI application.</p>
 <h3 id="gradle"><a class="anchor" href="#gradle"></a>Gradle</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="gradle">compile 'io.github.pablobastidasv:mongojdbc-utils:1.0.0'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="gradle">compile 'io.github.pablobastidasv:mongojdbc-utils:1.1.0'</code></pre>
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -730,6 +732,22 @@ the entity to a BSON object that can be created to save into database to get the
 id, because over <a href="http://mongodb.github.io/mongo-java-driver/3.6/driver/getting-started/quick-start-pojo/">POJO</a> codec is not possible to obtain the new ID
 after save.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="customizer"><a class="anchor" href="#customizer"></a>Customizer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the case of the necessity to create an index the library provides an
+interface which can be implemented and this will run as soon as the
+<code>MongoDatabase</code> reference is created.</p>
+</div>
+<div class="paragraph">
+<p>The interface <code>co.pablob.mongo.boundary.MongodbCustomizer</code> requires the
+implementation of the method <code>customize</code> which receives a reference of the
+database (<code>MongoDatabase</code>) to make the needed customizations like index
+creation.</p>
 </div>
 </div>
 </div>
@@ -931,12 +949,42 @@ get the id of an POJO object just after creation (<a href="https://jira.mongodb.
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="how-to-create-indexes"><a class="anchor" href="#how-to-create-indexes"></a>How to create indexes</h3>
+<div class="paragraph">
+<p>When there is the necessity to create index into your database proceed based
+on below example.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>public class Indexer implements MongodbCustomizer {
+    @Override
+    public void customize(MongoDatabase mongoDatabase) {
+        MongoCollection&lt;Document&gt; collection = mongoDatabase.getCollection("collection");</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>IndexOptions options = new IndexOptions();
+options.unique(true);</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>        collection.createIndex(Indexes.ascending("unq_field"), options);
+    }
+}</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-09-30 10:20:26 CEST
+Last updated 2018-12-18 07:55:41 CET
 </div>
 </div>
 </body>
