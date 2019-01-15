@@ -1,6 +1,7 @@
 package co.pablob.mongo.control;
 
 import co.pablob.mongo.boundary.MongodbCustomizer;
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -36,6 +37,7 @@ public class DocumentCollectionManagerProducer {
     private char[] pwd;
     private String usr;
     private String server;
+    private String connectionString;
     private int port;
     private String databaseName;
 
@@ -50,17 +52,26 @@ public class DocumentCollectionManagerProducer {
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
         initEnv();
 
-        final MongoClientSettings.Builder builder = MongoClientSettings.builder()
-                .applyToClusterSettings(this::clusterSettings)
-                .codecRegistry(codecRegistry);
+        buildMongodbClient();
 
-        credentials().ifPresent(builder::credential);
-
-        mongoClient = MongoClients.create(builder.build());
         database = mongoClient.getDatabase(databaseName);
 
         customizations.stream()
                 .forEach(c -> c.customize(database));
+    }
+
+    private void buildMongodbClient() {
+        final MongoClientSettings.Builder builder = MongoClientSettings.builder()
+                .codecRegistry(codecRegistry);
+
+        if (Objects.nonNull(connectionString)) {
+            builder.applyConnectionString(new ConnectionString(connectionString));
+        } else {
+            builder.applyToClusterSettings(this::clusterSettings);
+            credentials().ifPresent(builder::credential);
+        }
+
+        mongoClient = MongoClients.create(builder.build());
     }
 
     public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object init) {
@@ -70,6 +81,7 @@ public class DocumentCollectionManagerProducer {
 
     private void initEnv() {
         usr = System.getenv().get(ENV_MONGO_USERNAME);
+        connectionString = System.getenv().get(ENV_MONGO_CONNECTION_STRING);
         pwd = Optional.ofNullable(System.getenv().get(ENV_MONGO_PASSWORD))
                 .map(String::toCharArray)
                 .orElse(null);
