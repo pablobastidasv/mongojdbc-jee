@@ -94,7 +94,7 @@ public class DocumentCollectionManagerProducer {
     }
 
     private Optional<MongoCredential> credentials() {
-        if (Objects.nonNull(connectionString) || Objects.isNull(usr) || Objects.isNull(pwd)) {
+        if (Objects.isNull(usr) || Objects.isNull(pwd)) {
             return Optional.empty();
         }
 
