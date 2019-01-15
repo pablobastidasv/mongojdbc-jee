@@ -52,17 +52,26 @@ public class DocumentCollectionManagerProducer {
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
         initEnv();
 
-        final MongoClientSettings.Builder builder = MongoClientSettings.builder()
-                .applyToClusterSettings(this::clusterSettings)
-                .codecRegistry(codecRegistry);
+        buildMongodbClient();
 
-        credentials().ifPresent(builder::credential);
-
-        mongoClient = MongoClients.create(builder.build());
         database = mongoClient.getDatabase(databaseName);
 
         customizations.stream()
                 .forEach(c -> c.customize(database));
+    }
+
+    private void buildMongodbClient() {
+        final MongoClientSettings.Builder builder = MongoClientSettings.builder()
+                .codecRegistry(codecRegistry);
+
+        if (Objects.nonNull(connectionString)) {
+            builder.applyConnectionString(new ConnectionString(connectionString));
+        } else {
+            builder.applyToClusterSettings(this::clusterSettings);
+            credentials().ifPresent(builder::credential);
+        }
+
+        mongoClient = MongoClients.create(builder.build());
     }
 
     public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object init) {
@@ -93,11 +102,7 @@ public class DocumentCollectionManagerProducer {
     }
 
     private void clusterSettings(ClusterSettings.Builder builder) {
-        if(Objects.nonNull(connectionString)){
-            builder.applyConnectionString(new ConnectionString(connectionString));
-        } else {
-            builder.hosts(Collections.singletonList(new ServerAddress(server, port)));
-        }
+        builder.hosts(Collections.singletonList(new ServerAddress(server, port)));
     }
 
     @Produces

@@ -34,6 +34,10 @@ overriding the default values.
 | DATABASE_NAME
 | Database name
 | avalane
+
+| MONGO_CONNECTION_STRING
+| Connection string
+| `<Empty>`
 |====
 
 === Mongo JDBC
