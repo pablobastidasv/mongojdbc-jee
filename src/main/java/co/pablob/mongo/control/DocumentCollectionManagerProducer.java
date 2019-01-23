@@ -106,11 +106,6 @@ public class DocumentCollectionManagerProducer {
     }
 
     @Produces
-    public MongoDatabase produceDatabase() {
-        return database;
-    }
-
-    @Produces
     public MongoClient produceMongoClient() {
         return mongoClient;
     }

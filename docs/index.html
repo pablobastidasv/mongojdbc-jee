@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<meta name="author" content="version: 1.2.0">
+<meta name="author" content="version: 1.3.0">
 <title>Mongo JDBC - JakartaEE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -522,7 +522,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Mongo JDBC - JakartaEE</h1>
 <div class="details">
-<span id="author" class="author">version: 1.2.0</span><br>
+<span id="author" class="author">version: 1.3.0</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -544,7 +544,13 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#why-does-this-interface-exist">Why does this interface exist</a></li>
 </ul>
 </li>
+<li><a href="#mongoclient">MongoClient</a></li>
 <li><a href="#customizer">Customizer</a></li>
+<li><a href="#multi-tenant">Multi-tenant</a>
+<ul class="sectlevel2">
+<li><a href="#how-does-it-work">How does it work?</a></li>
+</ul>
+</li>
 <li><a href="#examples">Examples</a>
 <ul class="sectlevel2">
 <li><a href="#working-with-mongodatabase">Working with MongoDatabase</a></li>
@@ -553,6 +559,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#using-mongodbentity-interface">Using MongodbEntity interface</a></li>
 <li><a href="#how-to-get-id-after-save-a-document">How to get id after save a document</a></li>
 <li><a href="#how-to-create-indexes">How to create indexes</a></li>
+<li><a href="#multi-tenant-based-on-user">Multi-tenant based on user</a></li>
 </ul>
 </li>
 </ul>
@@ -606,7 +613,7 @@ applications and every CDI application.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>io.github.pablobastidasv<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>mongojdbc-utils<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>1.2.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.3.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -615,7 +622,7 @@ applications and every CDI application.</p>
 <h3 id="gradle"><a class="anchor" href="#gradle"></a>Gradle</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="gradle">compile 'io.github.pablobastidasv:mongojdbc-utils:1.2.0'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="gradle">compile 'io.github.pablobastidasv:mongojdbc-utils:1.3.0'</code></pre>
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -741,6 +748,25 @@ after save.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="mongoclient"><a class="anchor" href="#mongoclient"></a>MongoClient</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>MongoClient</code> instance is injectable via CDI as explained below.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>@Inject
+private MongoClient client;</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The instance is created when the application is started.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="customizer"><a class="anchor" href="#customizer"></a>Customizer</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -753,6 +779,34 @@ interface which can be implemented and this will run as soon as the
 implementation of the method <code>customize</code> which receives a reference of the
 database (<code>MongoDatabase</code>) to make the needed customizations like index
 creation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="multi-tenant"><a class="anchor" href="#multi-tenant"></a>Multi-tenant</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since version 1.3.0, there is a strategy to support multi tenant database.</p>
+</div>
+<div class="sect2">
+<h3 id="how-does-it-work"><a class="anchor" href="#how-does-it-work"></a>How does it work?</h3>
+<div class="paragraph">
+<p>This library creates one MongodbClient instance, this instance is used to
+provide the database reference which is used by the collections injection.</p>
+</div>
+<div class="paragraph">
+<p>The collection injector is a generic method which must be <code>@Dependent</code> scope
+and cannot be <code>@RequestScoped</code> doing this provider not an option when a
+multi-tenant behaviour is needed due to the database must be choose based on
+each request. On the other hand, the database provider is not a generic
+producer method allowing this to be scoped as <code>@RequestScoped</code> hitting the
+connection to the database based on each request.</p>
+</div>
+<div class="paragraph">
+<p>To achieve a multi-tenant behaviour, the library provide the option to specialize
+the class <code>co.pablob.mongo.control.DatabaseNameProvider</code> which is in charge
+to specify to the Database producer what is the database name.|</p>
+</div>
 </div>
 </div>
 </div>
@@ -984,12 +1038,73 @@ options.unique(true);</pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="multi-tenant-based-on-user"><a class="anchor" href="#multi-tenant-based-on-user"></a>Multi-tenant based on user</h3>
+<div class="paragraph">
+<p>On this example let&#8217;s assume the database will depend on the user and we can
+get the user information via CDI Injection.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Specializes <i class="conum" data-value="1"></i><b>(1)</b>
+public class MultiTenantDatabaseNameProvider extends DatabaseNameProvider { <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @Inject
+    private JwtPrincipal principal; <i class="conum" data-value="3"></i><b>(3)</b>
+
+    @Override
+    public String produceDatabaseName() {
+        return principal.getDatabase(); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+}
+
+public class MyService {
+
+    @Inject
+    private Database database; <i class="conum" data-value="5"></i><b>(5)</b>
+
+    public void doSomething() {
+        Collection collection = database.getCollection("colection_name"); <i class="conum" data-value="6"></i><b>(6)</b>
+
+        ...
+    }
+}</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The class must be an specialization, this can achieved annotation the class
+<code>Specializes</code> from <code>javax.enterprise.inject</code> package.</p>
+</li>
+<li>
+<p>The class must extends <code>co.pablob.mongo.control.DatabaseNameProvider</code>.</p>
+</li>
+<li>
+<p>In this example, the user information is stored in <code>JwtPrincipal</code> object so
+the injection of this instance is done (CDI injection is supported in this point).</p>
+</li>
+<li>
+<p>In the <code>produceDatabaseName</code> method overwriting a String is returned, this
+String is the database name that will be used in Database reference instantiation.</p>
+</li>
+<li>
+<p>Now, on our service or where we needed, we can inject the database and this
+will reference the database specified in the <code>DatabaseNameProvider</code> specialized
+class.</p>
+</li>
+<li>
+<p>Use this instance to access the collection and do whatever you need.</p>
+</li>
+</ol>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-12-18 07:55:41 CET
+Last updated 2019-01-23 08:15:32 CET
 </div>
 </div>
 </body>

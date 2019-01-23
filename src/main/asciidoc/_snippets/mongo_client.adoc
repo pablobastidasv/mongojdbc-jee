@@ -8,3 +8,4 @@ The `MongoClient` instance is injectable via CDI as explained below.
 private MongoClient client;
 ====
 
+The instance is created when the application is started.
