@@ -1,0 +1,19 @@
+== Multi-tenant
+
+Since version 1.3.0, there is a strategy to support multi tenant database.
+
+=== How does it work?
+
+This library creates one MongodbClient instance, this instance is used to
+provide the database reference which is used by the collections injection.
+
+The collection injector is a generic method which must be `@Dependent` scope
+and cannot be `@RequestScoped` doing this provider not an option when a
+multi-tenant behaviour is needed due to the database must be choose based on
+each request. On the other hand, the database provider is not a generic
+producer method allowing this to be scoped as `@RequestScoped` hitting the
+connection to the database based on each request.
+
+To achieve a multi-tenant behaviour, the library provide the option to specialize
+the class `co.pablob.mongo.control.DatabaseNameProvider` which is in charge
+to specify to the Database producer what is the database name.|

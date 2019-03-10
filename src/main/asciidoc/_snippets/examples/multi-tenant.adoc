@@ -1,0 +1,44 @@
+=== Multi-tenant based on user
+
+
+On this example let's assume the database will depend on the user and we can
+get the user information via CDI Injection.
+
+[code,java]
+----
+@Specializes <1>
+public class MultiTenantDatabaseNameProvider extends DatabaseNameProvider { <2>
+
+    @Inject
+    private JwtPrincipal principal; <3>
+
+    @Override
+    public String produceDatabaseName() {
+        return principal.getDatabase(); <4>
+    }
+}
+
+public class MyService {
+
+    @Inject
+    private Database database; <5>
+
+    public void doSomething() {
+        Collection collection = database.getCollection("colection_name"); <6>
+
+        ...
+    }
+}
+----
+
+1. The class must be an specialization, this can achieved annotation the class
+`Specializes` from `javax.enterprise.inject` package.
+2. The class must extends `co.pablob.mongo.control.DatabaseNameProvider`.
+3. In this example, the user information is stored in `JwtPrincipal` object so
+the injection of this instance is done (CDI injection is supported in this point).
+4. In the `produceDatabaseName` method overwriting a String is returned, this
+String is the database name that will be used in Database reference instantiation.
+5. Now, on our service or where we needed, we can inject the database and this
+will reference the database specified in the `DatabaseNameProvider` specialized
+class.
+6. Use this instance to access the collection and do whatever you need.

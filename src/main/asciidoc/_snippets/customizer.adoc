@@ -9,4 +9,7 @@ implementation of the method `customize` which receives a reference of the
 database (`MongoDatabase`) to make the needed customizations like index
 creation.
 
+WARNING: When multitenant mode is enabled customizer only will run in default database
+other databases will not apply the customizers.
+
 

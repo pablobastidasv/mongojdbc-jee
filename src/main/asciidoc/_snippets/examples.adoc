@@ -14,3 +14,5 @@ include::examples/get_id_after_save.adoc[]
 
 include::examples/index_creation.adoc[]
 
+include::examples/multi-tenant.adoc[]
+
