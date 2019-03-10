@@ -780,6 +780,19 @@ implementation of the method <code>customize</code> which receives a reference o
 database (<code>MongoDatabase</code>) to make the needed customizations like index
 creation.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+When multitenant mode is enabled customizer only will run in default database
+other databases will not apply the customizers.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
