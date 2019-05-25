@@ -40,6 +40,11 @@ public class DocumentCollectionManagerProducer {
     private String connectionString;
     private int port;
     private String databaseName;
+    private boolean buildConnectionString;
+    private String options;
+
+    private static final int NON_PORT = 0;
+    private static final int MONGO_DEFAULT_PORT = 27017;
 
     @Inject
     private Instance<MongodbCustomizer> customizations;
@@ -66,6 +71,19 @@ public class DocumentCollectionManagerProducer {
 
         if (Objects.nonNull(connectionString)) {
             builder.applyConnectionString(new ConnectionString(connectionString));
+        } else if(buildConnectionString) {
+            String connectionStringBuilt = "mongodb+srv://" +
+                usr +
+                ":" +
+                String.valueOf(pwd) +
+                "@" +
+                server +
+                (port == NON_PORT ? "" : ":" + port) +
+                "/" +
+                databaseName +
+                ("".equals(options) ? "" : "?" + options);
+
+            builder.applyConnectionString(new ConnectionString(connectionStringBuilt));
         } else {
             builder.applyToClusterSettings(this::clusterSettings);
             credentials().ifPresent(builder::credential);
@@ -83,12 +101,16 @@ public class DocumentCollectionManagerProducer {
         usr = System.getenv().get(ENV_MONGO_USERNAME);
         connectionString = System.getenv().get(ENV_MONGO_CONNECTION_STRING);
         pwd = Optional.ofNullable(System.getenv().get(ENV_MONGO_PASSWORD))
-                .map(String::toCharArray)
-                .orElse(null);
+            .map(String::toCharArray)
+            .orElse(null);
         server = System.getenv().getOrDefault(ENV_MONGO_SERVER, DEFAULT_MONGO_SERVER);
+        buildConnectionString = Optional.ofNullable(System.getenv().get(ENV_BUILD_CONNECTION_STRING))
+            .map(Boolean::new)
+            .get();
         port = Optional.ofNullable(System.getenv().get(ENV_MONGO_PORT))
-                    .map(Integer::parseInt)
-                    .orElse(27017);
+            .map(Integer::parseInt)
+            .orElse(buildConnectionString ? NON_PORT : MONGO_DEFAULT_PORT);
+        options = System.getenv().getOrDefault(ENV_MONGO_OPTIONS, "");
 
         databaseName = System.getenv().getOrDefault(ENV_DATABASE_NAME, DEFAULT_DATABASE_NAME);
     }

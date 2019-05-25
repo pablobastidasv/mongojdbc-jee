@@ -35,6 +35,17 @@ overriding the default values.
 | Database name
 | avalane
 
+| MONGO_OPTIONS
+| Mongo options that will be attached in string built if
+`BUILD_CONNECTION_STRING` is set to `true`
+| `<Empty>`
+
+| BUILD_CONNECTION_STRING
+| If `true` a connection string will be build with values
+in `MONGO_USERNAME`, `MONGO_PASSWORD`, `MONGO_SERVER`, `MONGO_PORT`,
+ `DATABASE_NAME` and `MONGO_OPTIONS`
+| `false`
+
 | MONGO_CONNECTION_STRING
 | Connection string
 | `<Empty>`
