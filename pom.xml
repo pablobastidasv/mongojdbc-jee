@@ -120,7 +120,7 @@
 
     <scm>
         <connection>scm:git:git://github.com/pablobastidasv/mongojdbc-jee.git</connection>
-        <developerConnection>scm:git:ssh://github.com/pablobastidasv/mongojdbc-jee.git</developerConnection>
+        <developerConnection>scm:git:ssh://github.com:pablobastidasv/mongojdbc-jee.git</developerConnection>
         <url>http://github.com/pablobastidasv/mongojdbc-jee/tree/master</url>
     </scm>
 
