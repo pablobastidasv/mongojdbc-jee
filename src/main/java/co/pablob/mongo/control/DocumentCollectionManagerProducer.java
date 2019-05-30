@@ -32,7 +32,8 @@ public class DocumentCollectionManagerProducer {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    private final CodecRegistry codecRegistry;
+    @Inject
+    private CodecRegistry codecRegistry;
 
     private char[] pwd;
     private String usr;
@@ -49,9 +50,7 @@ public class DocumentCollectionManagerProducer {
     @Inject
     private Instance<MongodbCustomizer> customizations;
 
-    @Inject
-    public DocumentCollectionManagerProducer(CodecRegistry codecRegistry) {
-        this.codecRegistry = codecRegistry;
+    public DocumentCollectionManagerProducer() {
     }
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
@@ -73,10 +72,9 @@ public class DocumentCollectionManagerProducer {
             builder.applyConnectionString(new ConnectionString(connectionString));
         } else if(buildConnectionString) {
             String connectionStringBuilt = "mongodb+srv://" +
-                usr +
-                ":" +
-                String.valueOf(pwd) +
-                "@" +
+                (Objects.isNull(usr) ? "" : usr) +
+                (Objects.isNull(pwd) ? "" : ":" + String.valueOf(pwd)) +
+                (Objects.isNull(usr) ? "" : "@") +
                 server +
                 (port == NON_PORT ? "" : ":" + port) +
                 "/" +
@@ -106,7 +104,7 @@ public class DocumentCollectionManagerProducer {
         server = System.getenv().getOrDefault(ENV_MONGO_SERVER, DEFAULT_MONGO_SERVER);
         buildConnectionString = Optional.ofNullable(System.getenv().get(ENV_BUILD_CONNECTION_STRING))
             .map(Boolean::new)
-            .get();
+            .orElse(false);
         port = Optional.ofNullable(System.getenv().get(ENV_MONGO_PORT))
             .map(Integer::parseInt)
             .orElse(buildConnectionString ? NON_PORT : MONGO_DEFAULT_PORT);
